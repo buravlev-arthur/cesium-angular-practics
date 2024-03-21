@@ -1,0 +1,8 @@
+.cesium-viewer {
+  display: block;
+  width: 1300px;
+  height: 700px;
+  margin: 100px auto;
+  padding: 0;
+  overflow: hidden;
+}

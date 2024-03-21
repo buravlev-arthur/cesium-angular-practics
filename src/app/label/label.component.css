@@ -1,0 +1,12 @@
+.cesium-label {
+  position: absolute;
+  display: flex;
+  z-index: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  text-wrap: nowrap;
+  user-select: none;
+}
