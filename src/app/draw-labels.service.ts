@@ -4,6 +4,8 @@ import {
   Cartesian3,
   Cartesian2,
   SceneTransforms,
+  Cartographic,
+  Math,
   type Clock,
 } from 'cesium';
 import type { Label } from './types';
@@ -18,17 +20,27 @@ export class DrawLabelsService {
   scratch3dPosition = new Cartesian3();
   scratch2dPosition = new Cartesian2();
 
-  constructor() {}
-
+  /**
+   * Устанавливает объект Viewer объект сервиса DrawLabels
+   * @param viewer Viewer-объект карты Cesisum
+   */
   setViewer(viewer: Viewer): void {
     this.viewer = viewer;
   }
 
+  /**
+   * Устанавливает массив отображаемых на карте лейблов
+   * @param labels массив Label-объектов с данными отображаемых на карте лейблов
+   */
   setLabels(labels: Label[]): void {
     this.labels = labels;
   }
 
-  removeLabels() {
+  /**
+   * Удаляет все лейблы с карты и отписывается от события изменения времени
+   * @returns void
+   */
+  removeLabels(): void {
     if (!this.viewer) return;
 
     this.viewer.clock.onTick.removeEventListener(this.callbackWithContext);
@@ -38,7 +50,11 @@ export class DrawLabelsService {
       .forEach(({ id }) => this.viewer?.entities.removeById(id));
   }
 
-  drawLabels() {
+  /**
+   * Добавляет лейблы на карту (экземпляры `Entity`) и подписывается на событие изменения времени для динамичной перерисовки лейблов
+   * @returns void
+   */
+  drawLabels(): void {
     if (!this.viewer) return;
 
     if (this.viewer.entities.values.length > 0) {
@@ -48,7 +64,7 @@ export class DrawLabelsService {
     this.labels.forEach((label) => {
       this.viewer!.entities.add({
         name: 'label',
-        position: Cartesian3.fromDegrees(label.coords[0], label.coords[1]),
+        position: label.coords,
       });
     });
 
@@ -56,6 +72,57 @@ export class DrawLabelsService {
     this.viewer.clock.onTick.addEventListener(this.callbackWithContext);
   }
 
+  /**
+   * Переводит долготу и широту в координаты трёхмерной декартовой системы
+   * @param lon долгота, число
+   * @param lan широта, число
+   * @returns Cartesian3-объект, координаты трехмерной декартовой системы
+   */
+  fromDegress(lon: number, lan: number): Cartesian3 {
+    return Cartesian3.fromDegrees(lon, lan);
+  }
+
+  /**
+   * Переводит координаты трёхмерной декартовой системы в долготу/широту
+   * @param position Cartesian3-объект, координаты трехмерной декартовой системы
+   * @returns числовой массив [долгота, широта]
+   */
+  fromCartesian(position: Cartesian3): [number, number] {
+    const cartographic = Cartographic.fromCartesian(position);
+    const lon = Math.toDegrees(cartographic.longitude);
+    const lan = Math.toDegrees(cartographic.latitude);
+
+    return [lon, lan];
+  }
+
+  /**
+   * Вычисляет координаты трёхмерной декартовой системы на карте по координатам мыши
+   * @param x координата курсора по оси x
+   * @param y координата курсора по оси y
+   * @returns координаты трёхмерной декартовой системы: x, y, z
+   */
+  normalizePickPosition(x: number, y: number): Cartesian3 | undefined {
+    if (!this.viewer) return;
+
+    const cursorPosition = new Cartesian2(x, y);
+    let position: Cartesian3 | undefined =
+      this.viewer.scene.pickPosition(cursorPosition);
+    if (position) {
+      let cartographic = Cartographic.fromCartesian(position);
+      if (cartographic && cartographic.height < 0) {
+        position = this.viewer.camera.pickEllipsoid(cursorPosition);
+      }
+    } else {
+      position = this.viewer.camera.pickEllipsoid(cursorPosition);
+    }
+
+    return position;
+  }
+
+  /**
+   * Callback-метод события изменения времени Cesium, который перерисовывает все отображаемые лейблы на карте
+   * @param clock Clock-объект карты Cesium
+   */
   callbackFunc(clock: Clock) {
     let position3d: Cartesian3 | undefined;
     let position2d: Cartesian2 | undefined;

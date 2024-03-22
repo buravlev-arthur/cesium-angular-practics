@@ -1,8 +1,10 @@
+import type { Cartesian3 } from 'cesium';
+
 export type Label = {
   text: string;
   position: [string, string];
   display: 'block' | 'none';
-  coords: [number, number];
+  coords: Cartesian3;
   backgroundColor: string;
   fontColor: string;
 };

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Viewer } from 'cesium';
+import { Viewer, Cartesian3 } from 'cesium';
 import { DrawLabelsService } from '../draw-labels.service';
 import type { Label, Params } from '../types';
 
@@ -31,7 +31,10 @@ export class ViewerComponent implements OnInit {
       text: this.params.text,
       position: ['0px', '0px'],
       display: 'none',
-      coords: [Number(this.params.longitude), Number(this.params.latitude)],
+      coords: this.drawLabelsService.fromDegress(
+        Number(this.params.longitude),
+        Number(this.params.latitude)
+      ),
       backgroundColor: this.params.backgroundColor,
       fontColor: this.params.fontColor,
     });
@@ -64,6 +67,20 @@ export class ViewerComponent implements OnInit {
       vrButton: false,
       geocoder: false,
       navigationHelpButton: false,
+    });
+
+    // устанавливаем лейблы в место двойного клика мыши на карте
+    cesiumElement?.addEventListener('dblclick', (event) => {
+      const labelHeight = 32;
+      const x = (event as PointerEvent).offsetX;
+      const y = (event as PointerEvent).offsetY - labelHeight;
+      const position = this.drawLabelsService.normalizePickPosition(x, y);
+      if (position) {
+        const [lon, lat] = this.drawLabelsService.fromCartesian(position);
+        this.params.longitude = lon;
+        this.params.latitude = lat;
+        this.addLabel();
+      }
     });
 
     // устанавливаем Viewer карты в сервис DrawLabel
