@@ -1,3 +1,5 @@
+![demo](https://github.com/buravlev-arthur/cesium-angular-practics/assets/14940878/439e55a2-a65b-4734-bd49-00102b552565)
+
 # Динамические лейблы
 
 ## Компоненты
