@@ -2,7 +2,8 @@
   display: block;
   width: 1300px;
   height: 700px;
-  margin: 100px auto;
+  margin: 20px auto 0px;
   padding: 0;
   overflow: hidden;
+  border-radius: 4px;
 }

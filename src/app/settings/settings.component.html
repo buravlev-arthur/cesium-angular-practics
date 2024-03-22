@@ -1,0 +1,25 @@
+<div *ngIf="params" class="settings">
+  <div>
+    <label for="text">Название:</label>
+    <input name="text" [(ngModel)]="params.text" />
+  </div>
+  <div>
+    <label for="longitude">Долгота:</label>
+    <input name="longitude" [(ngModel)]="params.longitude" />
+  </div>
+  <div>
+    <label for="latitude">Широта:</label>
+    <input [(ngModel)]="params.latitude" />
+  </div>
+  <div>
+    <label for="bg-color">Цвет фона:</label>
+    <input name="bg-color" [(ngModel)]="params.backgroundColor" />
+  </div>
+  <div>
+    <label for="font-color">Цвет текста:</label>
+    <input name="font-color" [(ngModel)]="params.fontColor" />
+  </div>
+  <div>
+    <button (click)="createLabel.emit()">Добавить</button>
+  </div>
+</div>

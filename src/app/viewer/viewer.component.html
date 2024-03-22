@@ -4,5 +4,9 @@
     [display]="label.display"
     [text]="label.text"
     [position]="label.position"
+    [backgroundColor]="label.backgroundColor"
+    [fontColor]="label.fontColor"
   ></app-label>
 </div>
+
+<app-settings [params]="params" (createLabel)="addLabel()"></app-settings>

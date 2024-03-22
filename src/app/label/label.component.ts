@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 export class LabelComponent {
   @Input() text: string = '';
   @Input() display: 'block' | 'none' = 'none';
-  @Input() backgroundColor: string = '#000000';
-  @Input() fontColor: string = '#ffffff';
+  @Input() backgroundColor: string = '#ffffff';
+  @Input() fontColor: string = '#000000';
   @Input() position: [string, string] = ['0px', '0px'];
 }
