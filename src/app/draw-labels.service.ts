@@ -33,7 +33,9 @@ export class DrawLabelsService {
 
     this.viewer.clock.onTick.removeEventListener(this.callbackWithContext);
     this.callbackWithContext = () => {};
-    this.viewer.entities.removeAll();
+    this.viewer.entities.values
+      .filter(({ name }) => name === 'label')
+      .forEach(({ id }) => this.viewer?.entities.removeById(id));
   }
 
   drawLabels() {
@@ -45,6 +47,7 @@ export class DrawLabelsService {
 
     this.labels.forEach((label) => {
       this.viewer!.entities.add({
+        name: 'label',
         position: Cartesian3.fromDegrees(label.coords[0], label.coords[1]),
       });
     });

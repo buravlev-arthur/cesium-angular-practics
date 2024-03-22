@@ -7,7 +7,7 @@
   margin: 10px auto;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   padding: 0px 20px;
 }
 
@@ -17,4 +17,9 @@ label {
 
 input {
   width: 100px;
+}
+
+.inputs-container {
+  display: flex;
+  gap: 10px;
 }
